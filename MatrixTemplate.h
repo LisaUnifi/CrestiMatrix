@@ -79,7 +79,7 @@ public:
     }
 
     MatrixTemplate operator*(const T& number) const {
-        MatrixTemplate<T>
+        MatrixTemplate<T>;
     }
 
     MatrixTemplate operator*(const MatrixTemplate& right) const {
