@@ -8,6 +8,8 @@
 #include <iostream>
 #include <cmath>
 #include <cfloat>
+#include <stdexcept>
+#include "FactoryMatrixTemplate.h"
 
 template <typename T>
 
@@ -15,18 +17,23 @@ class MatrixTemplate {
 
 public:
 
-    MatrixTemplate() {
+    MatrixTemplate(){
         //...
     }
 
     MatrixTemplate(int r, int c) : rows(r), columns(c) {
-        //TODO exception when r<1 and/or c<1, or set it =1
+        if ((rows<1) || (columns<1))
+            throw std::out_of_range("Non è possibile creare la matrice: rows e columns devono essere maggiori di 1");
         matrix = new T[rows * columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 matrix[(i * columns) + j] = 0;
             }
         }
+    }
+
+    explicit MatrixTemplate(FactoryMatrixTemplate* f) : factory(f){
+        factory->createMatrix(rows, columns);
     }
 
     MatrixTemplate (const MatrixTemplate& right){
@@ -40,12 +47,14 @@ public:
         }
     }
 
-    ~MatrixTemplate(){
+    virtual ~MatrixTemplate(){
+        delete factory;
         delete[] matrix;
     }
 
     MatrixTemplate operator+(const MatrixTemplate& right) const {
-        //TODO controllo sulla dimensione della matrice con eccezione
+        if((rows != right.rows) || (columns != right.columns))
+            throw std::logic_error("Non è possibile fare l'operazione richiesta: le matrici devono avere le stesse dimensioni.");
         MatrixTemplate<T> matrixSum(rows, columns);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -56,7 +65,8 @@ public:
     }
 
     MatrixTemplate operator+=(const MatrixTemplate& right) {
-        //TODO controllo sulla dimensione della matrice con eccezione
+        if((rows != right.rows) || (columns != right.columns))
+            throw std::logic_error("Non è possibile fare l'operazione richiesta: le matrici devono avere le stesse dimensioni.");
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 matrix[(i * columns) + j] = matrix[(i * columns) + j] + right.matrix[(i * columns) + j];
@@ -66,7 +76,8 @@ public:
     }
 
     MatrixTemplate operator-(const MatrixTemplate& right) const {
-        //TODO controllo sulla dimensione della matrice con eccezione
+        if((rows != right.rows) || (columns != right.columns))
+            throw std::logic_error("Non è possibile fare l'operazione richiesta: le matrici devono avere le stesse dimensioni.");
         MatrixTemplate<T> matrixDif(rows, columns);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -77,7 +88,8 @@ public:
     }
 
     MatrixTemplate operator-=(const MatrixTemplate& right) {
-        //TODO controllo sulla dimensione della matrice con eccezione
+        if((rows != right.rows) || (columns != right.columns))
+            throw std::logic_error("Non è possibile fare l'operazione richiesta: le matrici devono avere le stesse dimensioni.");
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 matrix[(i * columns) + j] = matrix[(i * columns) + j] - right.matrix[(i * columns) + j];
@@ -87,12 +99,18 @@ public:
     }
 
     MatrixTemplate operator*(const T& number) const {
-        MatrixTemplate<T>;
-        //TODO
+        MatrixTemplate<T> matrixMul(rows, columns);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                matrixMul.matrix[(i * columns) + j] = number * matrix[(i * columns)] ;
+            }
+        }
+        return matrixMul;
     }
 
     MatrixTemplate operator*(const MatrixTemplate& right) const {
-        //TODO controllo sulla dimensione della matrice e se può fare il prodotto con la right, con eccezione
+        if(columns != right.rows)
+            throw std::logic_error("Non è possibile fare l'operazione richiesta: la matrice di destra deve avere numero di righe pari alle colonne della matrice di sinistra.");
         MatrixTemplate<T> matrixMul(rows, right.columns);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < right.columns; j++) {
@@ -142,7 +160,8 @@ public:
     }
 
     MatrixTemplate selectRow(int i) {
-        //TODO exception i>rows or i<1
+        if ((i>rows) || (i<1))
+            throw std::out_of_range("Riga non esistente.");
         MatrixTemplate<T> rowMatrix(1, columns);
         for (int k = 0; k < columns; k++){
             rowMatrix.matrix[i] = matrix[((i-1)* columns) + k];
@@ -151,7 +170,8 @@ public:
     }
 
     MatrixTemplate selectColumn(int i) {
-        //TODO exception i>columns or i<1
+        if ((i>columns) || (i<1))
+            throw std::out_of_range("Colonna non esistente.");
         MatrixTemplate<T> columnMatrix(1, columns);
         for (int k = 0; k < rows; k++){
             columnMatrix.matrix[i] = matrix[(k * columns) + (i - 1)];
@@ -188,12 +208,14 @@ public:
     }
 
     T getValue(int i, int j) const {
-        //TODO excption: i>rows, j>columns, i<1, j<1
+        if ((i>rows) || (i<1) || (j>columns) || (j<1))
+            throw std::out_of_range("Elemento non esistente.");
         return matrix[((i - 1) * columns) + (j - 1)];
     }
 
     void setValue(int i, int j, const T& value ){
-        //TODO exception
+        if ((i>rows) || (i<1) || (j>columns) || (j<1))
+            throw std::out_of_range("Elemento non esistente.");
         matrix[((i - 1) * columns) + (j - 1)] = value;
     }
 
@@ -202,6 +224,7 @@ private:
     int rows;
     int columns;
     T* matrix;
+    FactoryMatrixTemplate* factory;
 
 };
 
