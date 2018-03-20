@@ -5,11 +5,19 @@
 #ifndef CRESTIMATRIX_MATRIXTEMPLATE_H
 #define CRESTIMATRIX_MATRIXTEMPLATE_H
 
+#include <iostream>
+#include <cmath>
+#include <cfloat>
+
 template <typename T>
 
 class MatrixTemplate {
 
 public:
+
+    MatrixTemplate() {
+        //...
+    }
 
     MatrixTemplate(int r, int c) : rows(r), columns(c) {
         //TODO exception when r<1 and/or c<1, or set it =1
@@ -80,6 +88,7 @@ public:
 
     MatrixTemplate operator*(const T& number) const {
         MatrixTemplate<T>;
+        //TODO
     }
 
     MatrixTemplate operator*(const MatrixTemplate& right) const {
@@ -110,15 +119,65 @@ public:
         return true;
     }
 
+    bool equal(const int& left, const int& right){
+        return (left == right);
+    }
+
+    bool equal(const float& left, const float& right){
+        if (fabs(left - right) < FLT_EPSILON){
+            return false;
+        }
+        return true;
+    }
+
+    bool equal(const double& left, const double& right){
+        if (fabs(left - right) < FLT_EPSILON){
+            return false;
+        }
+        return true;
+    }
+
     bool operator!=(const MatrixTemplate& right) const {
         return !(*this==right);
     }
 
-    //TODO sel row
+    MatrixTemplate selectRow(int i) {
+        //TODO exception i>rows or i<1
+        MatrixTemplate<T> rowMatrix(1, columns);
+        for (int k = 0; k < columns; k++){
+            rowMatrix.matrix[i] = matrix[((i-1)* columns) + k];
+        }
+        return rowMatrix;
+    }
 
-    //TODO sel col
+    MatrixTemplate selectColumn(int i) {
+        //TODO exception i>columns or i<1
+        MatrixTemplate<T> columnMatrix(1, columns);
+        for (int k = 0; k < rows; k++){
+            columnMatrix.matrix[i] = matrix[(k * columns) + (i - 1)];
+        }
+        return columnMatrix;
+    }
 
-    //TODO trasposta
+    MatrixTemplate transpose() const {
+        MatrixTemplate<T> matrixTransposed(columns, rows);
+        for (int i = 0; i < rows; i++){
+            for (int j = 0; j < columns; j++){
+                matrixTransposed.matrix[(j * matrixTransposed.columns) + i] = this->matrix[(i * this->columns) + j];
+            }
+        }
+        return matrixTransposed;
+    }
+
+    void print() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                std::cout << matrix[(i * columns) + j] << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+    }
 
     int getRows() const {
         return rows;
@@ -126,6 +185,16 @@ public:
 
     int getColumns() const {
         return columns;
+    }
+
+    T getValue(int i, int j) const {
+        //TODO excption: i>rows, j>columns, i<1, j<1
+        return matrix[((i - 1) * columns) + (j - 1)];
+    }
+
+    void setValue(int i, int j, const T& value ){
+        //TODO exception
+        matrix[((i - 1) * columns) + (j - 1)] = value;
     }
 
 private:
