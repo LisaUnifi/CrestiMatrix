@@ -11,8 +11,8 @@
 #include <stdexcept>
 #include "FactoryMatrixTemplate.h"
 
-template <typename T>
 
+template <typename T>
 class MatrixTemplate {
 
 public:
@@ -32,7 +32,7 @@ public:
         }
     }
 
-    explicit MatrixTemplate(FactoryMatrixTemplate* f) : factory(f){
+    explicit MatrixTemplate(FactoryMatrixTemplate<T>* f) : factory(f){
         factory->createMatrix(rows, columns);
     }
 
@@ -224,7 +224,7 @@ private:
     int rows;
     int columns;
     T* matrix;
-    FactoryMatrixTemplate* factory;
+    FactoryMatrixTemplate<T>* factory;
 
 };
 

@@ -10,7 +10,9 @@
 #include <string>
 
 template <typename T>
+class MatrixTemplate;
 
+template <typename T>
 class FactoryMatrixTemplate {
 
 public:
@@ -18,9 +20,9 @@ public:
     MatrixTemplate<T> createMatrix(int r, int c) const {
         MatrixTemplate<T>* newMatrix;
         if (r==c)
-            newMatrix = new SquareMatrixTemplate(r);
+            newMatrix = new SquareMatrixTemplate<T>(r);
         else
-            newMatrix = new MatrixTemplate(r, c);
+            newMatrix = new MatrixTemplate<T>(r, c);
         return *newMatrix;
     }
 

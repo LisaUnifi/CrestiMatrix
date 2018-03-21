@@ -8,9 +8,10 @@
 #include "MatrixTemplate.h"
 
 template <typename T>
+class MatrixTemplate;
 
-
-class SquareMatrixTemplate : public MatrixTemplate {
+template <typename T>
+class SquareMatrixTemplate : public MatrixTemplate<T> {
 
 public:
 
