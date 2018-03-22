@@ -10,6 +10,7 @@
 #include <cfloat>
 #include <stdexcept>
 #include "FactoryMatrixTemplate.h"
+#include "FunctionMatrixTemplate.h"
 
 
 template <typename T>
@@ -18,7 +19,10 @@ class MatrixTemplate {
 public:
 
     MatrixTemplate(){
-        //...
+        this->rows = 0;
+        this->columns = 0;
+        this->matrix = NULL;
+        this->factory = NULL;
     }
 
     MatrixTemplate(int r, int c) : rows(r), columns(c) {
@@ -130,27 +134,9 @@ public:
             return false;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                if (!equal(matrix[(i * columns) + j], right.matrix[(i * columns) + j]))
+                if (!(sameOf(matrix[(i * columns) + j], right.matrix[(i * columns) + j])))
                     return false;
             }
-        }
-        return true;
-    }
-
-    bool equal(const int& left, const int& right){
-        return (left == right);
-    }
-
-    bool equal(const float& left, const float& right){
-        if (fabs(left - right) < FLT_EPSILON){
-            return false;
-        }
-        return true;
-    }
-
-    bool equal(const double& left, const double& right){
-        if (fabs(left - right) < FLT_EPSILON){
-            return false;
         }
         return true;
     }

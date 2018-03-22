@@ -13,17 +13,20 @@ template <typename T>
 class MatrixTemplate;
 
 template <typename T>
+class SquareMatrixTemplate;
+
+template <typename T>
 class FactoryMatrixTemplate {
 
 public:
 
-    MatrixTemplate<T> createMatrix(int r, int c) const {
+    MatrixTemplate<T>* createMatrix(int r, int c) const {
         MatrixTemplate<T>* newMatrix;
         if (r==c)
             newMatrix = new SquareMatrixTemplate<T>(r);
         else
             newMatrix = new MatrixTemplate<T>(r, c);
-        return *newMatrix;
+        return newMatrix;
     }
 
 };
