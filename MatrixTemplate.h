@@ -56,6 +56,21 @@ public:
         delete[] matrix;
     }
 
+    MatrixTemplate operator=(const MatrixTemplate &right) {
+        if (&right == this)
+            return *this;
+        rows = right.rows;
+        columns = right.columns;
+        delete[] matrix;
+        matrix = new T[rows * columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                matrix[(i * columns) + j] = right.matrix[(i * columns) + j];
+            }
+        }
+        return *this;
+    }
+
     MatrixTemplate operator+(const MatrixTemplate& right) const {
         if((rows != right.rows) || (columns != right.columns))
             throw std::logic_error("Non è possibile fare l'operazione richiesta: le matrici devono avere le stesse dimensioni.");
